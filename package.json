@@ -5,6 +5,7 @@
   "scripts": {
     "start:codequest": "pnpm --filter codequest start",
     "build:codequest": "pnpm --filter codequest build",
-    "test:codequest": "pnpm --filter codequest test"
+    "test:codequest": "pnpm --filter codequest test",
+    "start:api": "pnpm --filter api start:dev"
   }
 }
