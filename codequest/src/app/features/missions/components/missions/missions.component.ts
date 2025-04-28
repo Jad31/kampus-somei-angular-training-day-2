@@ -55,11 +55,16 @@ export class MissionsComponent implements OnInit {
   ];
 
   missionStats!: MissionStats;
+  showNewMissionForm = false;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.missionStats = this.route.snapshot.data['missionData'];
+  }
+
+  toggleNewMissionForm(): void {
+    this.showNewMissionForm = !this.showNewMissionForm;
   }
 
   trackById(index: number, mission: Mission): string {

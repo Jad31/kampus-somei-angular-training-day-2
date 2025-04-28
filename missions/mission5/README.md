@@ -1,17 +1,17 @@
 # Mission 5️⃣ : Modernisation des Formulaires
 
 ## Contexte
-Les interfaces de contrôle de la station spatiale Orion nécessitent une mise à jour majeure de leurs formulaires d'interaction. Les formulaires actuels, basés sur une ancienne architecture non typée, génèrent de nombreuses erreurs et ne fournissent pas une expérience utilisateur optimale aux astronautes. Votre mission consiste à moderniser ces formulaires en utilisant l'approche Reactive Forms avec typage fort d'Angular 17.
+Les interfaces de contrôle de la station spatiale Orion nécessitent une nouvelle implémentation de leurs formulaires d'interaction. Actuellement, les astronautes doivent gérer manuellement la saisie et la validation des données, ce qui entraîne des erreurs et une expérience utilisateur médiocre. Votre mission consiste à implémenter des formulaires modernes en utilisant l'approche Reactive Forms avec typage fort d'Angular 17.
 
 ## Objectif général
-Migrer les formulaires existants vers l'architecture Reactive Forms typée, en améliorant la validation des données et l'expérience utilisateur pour garantir la fiabilité des opérations de la station spatiale.
+Créer une nouvelle architecture de formulaires basée sur Reactive Forms typée, en mettant en place une validation robuste des données et une expérience utilisateur optimale pour garantir la fiabilité des opérations de la station spatiale.
 
 ## État initial
-Le système actuel utilise :
-- Des formulaires template-driven ou des Reactive Forms non typés
-- Une validation basique et inconsistante
-- Une gestion d'erreurs rudimentaire
-- Pas de réutilisation des logiques de validation
+Le système actuel ne dispose d'aucun formulaire implémenté. Les astronautes doivent actuellement :
+- Saisir les données directement dans des champs de texte non contrôlés
+- Valider manuellement les informations
+- Gérer les erreurs de saisie sans assistance
+- Effectuer des vérifications supplémentaires pour s'assurer de la cohérence des données
 
 ## Concepts couverts
 - Reactive Forms avec typage fort (Typed Forms)
@@ -24,17 +24,17 @@ Le système actuel utilise :
 
 ### 👨‍🚀 Niveau Recrue (Junior)
 
-**Objectif**: Migrer un formulaire simple vers l'approche Reactive Forms typée.
+**Objectif**: Implémenter un formulaire simple en utilisant l'approche Reactive Forms typée.
 
 **Tâches**:
-1. Convertir le formulaire de profil d'astronaute en Reactive Forms typé:
-   - Créer une interface `AstronautProfileForm` pour typer le formulaire
-   - Remplacer les contrôles non typés par des `FormControl<T>` typés
+1. Créer un formulaire d'ajout de mission avec Reactive Forms typé:
+   - Définir une interface pour typer le formulaire
+   - Implémenter des `FormControl<T>` typés
    - Configurer les validateurs de base (required, minLength, etc.)
-   - Implémenter la gestion basique des erreurs dans le template
-2. Mettre à jour le template pour utiliser `formControlName` et `[formGroup]`
-3. Implémenter l'état du formulaire (pristine/dirty, valid/invalid)
-4. Ajouter des réactions basiques aux changements de valeur avec `valueChanges`
+   - Mettre en place la gestion basique des erreurs dans le template
+2. Développer le template avec `formControlName` et `[formGroup]`
+3. Gérer l'état du formulaire (pristine/dirty, valid/invalid)
+4. Implémenter des réactions basiques aux changements de valeur avec `valueChanges`
 
 **Compétences acquises**:
 - Création de formulaires typés avec Reactive Forms
@@ -91,16 +91,21 @@ Le système actuel utilise :
 - Création de composants réutilisables pour les formulaires
 - Organisation et test des validateurs
 
-## Exemples de code
+## Livrables attendus
+
+1. Formulaire d'ajout de mission implémenté avec Reactive Forms typé
+2. Formulaire complexe de mission avec sous-formulaires et validation avancée
+3. Système de gestion d'erreurs réutilisable
+4. Factory de formulaires pour la génération dynamique
+5. Tests unitaires pour les validateurs personnalisés
+
+## Exemple de mise en œuvre
 
 ### FormControl typé
 
 ```typescript
-// Avant (non typé)
-nameControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
-
-// Après (typé)
-nameControl = new FormControl<string>('', {
+// Exemple d'implémentation d'un FormControl typé
+missionNameControl = new FormControl<string>('', {
   nonNullable: true,
   validators: [Validators.required, Validators.minLength(2)],
   updateOn: 'blur'
@@ -111,78 +116,18 @@ nameControl = new FormControl<string>('', {
 
 ```typescript
 // Interface pour typer le formulaire
-export interface EditProfileForm {
+export interface MissionForm {
   name: FormControl<string>;
-  email: FormControl<string>;
-  bio: FormControl<string | null>;
+  description: FormControl<string>;
+  startDate: FormControl<Date | null>;
 }
 
 // FormGroup typé
-userForm = new FormGroup<EditProfileForm>({
+missionForm = new FormGroup<MissionForm>({
   name: new FormControl('', { nonNullable: true }),
-  email: new FormControl('', { nonNullable: true }),
-  bio: new FormControl(null),
+  description: new FormControl('', { nonNullable: true }),
+  startDate: new FormControl(null),
 });
-```
-
-### FormArray typé
-
-```typescript
-// FormArray pour gérer une liste de compétences
-skills = new FormArray<FormControl<string>>([]);
-
-// Méthode pour ajouter une compétence
-addSkill() {
-  this.skills.push(new FormControl('', { nonNullable: true }));
-}
-
-// Méthode pour supprimer une compétence
-removeSkill(index: number) {
-  this.skills.removeAt(index);
-}
-```
-
-### Exemple de Template avec Reactive Form
-
-```html
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <div class="form-field">
-    <label for="name">Nom</label>
-    <input id="name" formControlName="name" />
-    
-    @if (userForm.controls.name.invalid && userForm.controls.name.touched) {
-      <p class="error">
-        @if (userForm.controls.name.errors?.['required']) {
-          Le nom est obligatoire
-        } @else if (userForm.controls.name.errors?.['minlength']) {
-          Le nom doit contenir au moins 2 caractères
-        }
-      </p>
-    }
-  </div>
-  
-  <div class="form-field">
-    <label for="email">Email</label>
-    <input id="email" formControlName="email" type="email" />
-    
-    @if (userForm.controls.email.invalid && userForm.controls.email.touched) {
-      <p class="error">
-        @if (userForm.controls.email.errors?.['required']) {
-          L'email est obligatoire
-        } @else if (userForm.controls.email.errors?.['email']) {
-          Format d'email invalide
-        }
-      </p>
-    }
-  </div>
-  
-  <div class="form-field">
-    <label for="bio">Biographie</label>
-    <textarea id="bio" formControlName="bio"></textarea>
-  </div>
-  
-  <button type="submit" [disabled]="userForm.invalid">Enregistrer</button>
-</form>
 ```
 
 ### Validateur personnalisé
@@ -199,53 +144,6 @@ export const forbiddenMissionNameValidator: ValidatorFn =
     
     return forbidden ? { forbiddenName: true } : null;
   };
-```
-
-### Utilisation du validateur
-
-```typescript
-missionForm = new FormGroup({
-  name: new FormControl<string>('', {
-    nonNullable: true,
-    validators: [
-      Validators.required, 
-      Validators.minLength(3),
-      forbiddenMissionNameValidator
-    ]
-  }),
-  // autres champs...
-});
-```
-
-### Méthode de gestion d'erreurs
-
-```typescript
-getError(controlName: string): string | null {
-  const control = this.missionForm.get(controlName);
-  
-  if (!control || control.valid || control.pristine) {
-    return null;
-  }
-  
-  if (control.hasError('required')) {
-    return 'Ce champ est obligatoire';
-  }
-  
-  if (control.hasError('minlength')) {
-    const requiredLength = control.getError('minlength').requiredLength;
-    return `Ce champ doit contenir au moins ${requiredLength} caractères`;
-  }
-  
-  if (control.hasError('forbiddenName')) {
-    return 'Ce nom de mission contient des termes interdits';
-  }
-  
-  if (control.hasError('email')) {
-    return 'Format d'email invalide';
-  }
-  
-  return 'Champ invalide';
-}
 ```
 
 ### Composant réutilisable pour les erreurs
@@ -274,7 +172,6 @@ export class FormErrorComponent {
     required: 'Ce champ est obligatoire',
     email: 'Format d'email invalide',
     minlength: 'Longueur insuffisante',
-    // Errors par défaut...
   };
   
   get message(): string | null {
@@ -282,7 +179,6 @@ export class FormErrorComponent {
       return null;
     }
     
-    // Parcours des erreurs pour trouver le premier message applicable
     for (const errorKey of Object.keys(this.errors)) {
       if (this.control.hasError(errorKey)) {
         return this.errors[errorKey];
@@ -290,102 +186,6 @@ export class FormErrorComponent {
     }
     
     return 'Champ invalide';
-  }
-}
-```
-
-### Utilisation du composant d'erreur
-
-```html
-<div class="form-field">
-  <label for="name">Nom</label>
-  <input id="name" formControlName="name" />
-  <app-form-error [control]="userForm.controls.name"></app-form-error>
-</div>
-```
-
-### Factory de formulaires
-
-```typescript
-// shared/services/form-builder.service.ts
-@Injectable({
-  providedIn: 'root'
-})
-export class FormBuilderService {
-  
-  createMissionForm(initialData?: Partial<Mission>): FormGroup<MissionForm> {
-    return new FormGroup<MissionForm>({
-      name: new FormControl(initialData?.name || '', {
-        nonNullable: true,
-        validators: [Validators.required, forbiddenMissionNameValidator]
-      }),
-      startDate: new FormControl(initialData?.startDate || null, {
-        validators: [Validators.required, futureDateValidator]
-      }),
-      duration: new FormControl(initialData?.duration || 0, {
-        nonNullable: true,
-        validators: [Validators.required, Validators.min(1)]
-      }),
-      objectives: this.createObjectivesArray(initialData?.objectives || []),
-      crew: this.createCrewArray(initialData?.crew || [])
-    });
-  }
-  
-  private createObjectivesArray(objectives: MissionObjective[]): FormArray<FormGroup<ObjectiveForm>> {
-    return new FormArray<FormGroup<ObjectiveForm>>(
-      objectives.map(objective => this.createObjectiveForm(objective))
-    );
-  }
-  
-  createObjectiveForm(objective?: MissionObjective): FormGroup<ObjectiveForm> {
-    return new FormGroup<ObjectiveForm>({
-      description: new FormControl(objective?.description || '', {
-        nonNullable: true,
-        validators: [Validators.required]
-      }),
-      priority: new FormControl(objective?.priority || 'medium', {
-        nonNullable: true
-      })
-    });
-  }
-  
-  private createCrewArray(crew: CrewAssignment[]): FormArray<FormGroup<CrewAssignmentForm>> {
-    return new FormArray<FormGroup<CrewAssignmentForm>>(
-      crew.map(member => this.createCrewMemberForm(member))
-    );
-  }
-  
-  createCrewMemberForm(member?: CrewAssignment): FormGroup<CrewAssignmentForm> {
-    return new FormGroup<CrewAssignmentForm>({
-      astronautId: new FormControl(member?.astronautId || '', {
-        nonNullable: true,
-        validators: [Validators.required],
-        asyncValidators: [this.astronautAvailabilityValidator()]
-      }),
-      role: new FormControl(member?.role || '', {
-        nonNullable: true,
-        validators: [Validators.required]
-      })
-    });
-  }
-  
-  astronautAvailabilityValidator(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      if (!control.value) {
-        return of(null);
-      }
-      
-      // Simulation d'un appel API pour vérifier la disponibilité
-      return timer(500).pipe(
-        map(() => {
-          // Liste simulée d'astronautes indisponibles
-          const unavailableAstronauts = ['astro123', 'astro456'];
-          return unavailableAstronauts.includes(control.value) 
-            ? { astronautUnavailable: true } 
-            : null;
-        })
-      );
-    };
   }
 }
 ```
@@ -416,22 +216,22 @@ export class FormBuilderService {
 - **Testabilité**: Plus facile à tester unitairement
 - **Scalabilité**: Prise en charge de formulaires complexes et dynamiques
 
-## Migration des Untyped Forms vers Typed Forms
+## Structure de base des formulaires typés
 
-| Avant (Untyped) | Après (Typed) |
-|-----------------|---------------|
-| `new FormControl()` | `new FormControl<string>('', { nonNullable: true })` |
-| `new FormGroup({...})` | `new FormGroup<UserForm>({...})` |
-| `new FormArray([...])` | `new FormArray<FormControl<string>>([...])` |
+| Type de contrôle | Exemple d'implémentation |
+|-----------------|-------------------------|
+| FormControl | `new FormControl<string>('', { nonNullable: true })` |
+| FormGroup | `new FormGroup<MissionForm>({...})` |
+| FormArray | `new FormArray<FormControl<string>>([...])` |
 
 ## Livrables attendus
 
 Pour cette mission, vous devrez:
 
-1. Créer un formulaire de profil d'astronaute avec Reactive Forms typés
+1. Créer un formulaire d'ajout de mission avec Reactive Forms typés
 2. Développer un formulaire complexe de mission avec FormArray et validation avancée
 3. Mettre en place un système de gestion d'erreurs réutilisable
 4. Implémenter des validateurs personnalisés et asynchrones
 5. Créer une factory de formulaires pour la génération dynamique
 
-Cette modernisation des formulaires améliorera considérablement la fiabilité des opérations sur la station Orion en garantissant que seules des données valides sont acceptées par le système.
+Cette nouvelle implémentation des formulaires améliorera considérablement la fiabilité des opérations sur la station Orion en garantissant que seules des données valides sont acceptées par le système.

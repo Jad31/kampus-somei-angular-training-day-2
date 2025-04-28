@@ -1,4 +1,28 @@
 <div class="missions-container">
+  <div class="missions-header">
+    <h1>Gestion des Missions</h1>
+    <button class="btn-primary" (click)="toggleNewMissionForm()">
+      {{ showNewMissionForm ? 'Annuler' : 'Nouvelle Mission' }}
+    </button>
+  </div>
+
+  @if (showNewMissionForm) {
+    <div class="new-mission-form">
+      <h2>Nouvelle Mission</h2>
+      <!-- TODO: Implement the reactive form here -->
+      <div class="form-placeholder">
+        <p>À implémenter : Formulaire réactif pour ajouter une nouvelle mission</p>
+        <p>Le formulaire devra inclure :</p>
+        <ul>
+          <li>Nom de la mission</li>
+          <li>Priorité (low, medium, high)</li>
+          <li>Date de début</li>
+          <li>Description (optionnelle)</li>
+        </ul>
+      </div>
+    </div>
+  }
+
   <h2>Missions de la Station</h2>
 
   @defer (on viewport) {
