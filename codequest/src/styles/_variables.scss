@@ -1,0 +1,83 @@
+// Colors
+$primary: #1e88e5;
+$primary-light: #6ab7ff;
+$primary-dark: #005cb2;
+$secondary: #7c4dff;
+$secondary-light: #b47cff;
+$secondary-dark: #3f1dcb;
+$success: #00c853;
+$warning: #ffd600;
+$danger: #f44336;
+$info: #00b0ff;
+$dark: #121212;
+$light: #fafafa;
+
+// Space station theme colors
+$space-black: #0a0e17;
+$space-blue: #1a237e;
+$space-blue-light: #1e88e5;
+$space-gray: #37474f;
+$space-white: #eceff1;
+$space-accent: #00b0ff;
+$space-alert: #f50057;
+$space-success: #00c853;
+$space-warning: #ffab00;
+
+// Fonts
+$font-family-base: 'Roboto', 'Segoe UI', sans-serif;
+$font-family-monospace: 'Roboto Mono', monospace;
+$font-size-base: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-sm: 0.875rem;
+$font-size-xs: 0.75rem;
+
+// Spacing
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: ($spacer * 0.25),
+  2: ($spacer * 0.5),
+  3: $spacer,
+  4: ($spacer * 1.5),
+  5: ($spacer * 3),
+  6: ($spacer * 4),
+  7: ($spacer * 5),
+  8: ($spacer * 6),
+);
+
+// Border radius
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.125rem;
+$border-radius-xl: 1rem;
+$border-radius-pill: 50rem;
+
+// Shadows
+$box-shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+$box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+// Transitions
+$transition-base: all 0.2s ease-in-out;
+$transition-fast: all 0.15s ease-in-out;
+$transition-slow: all 0.3s ease-in-out;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// Breakpoints
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);

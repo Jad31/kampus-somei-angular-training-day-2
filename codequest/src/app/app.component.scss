@@ -1,0 +1,13 @@
+// Main content
+.orion-main {
+  padding: 2rem;
+  min-height: calc(100vh - 140px);
+}
+
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .orion-main {
+    padding: 1rem;
+  }
+}

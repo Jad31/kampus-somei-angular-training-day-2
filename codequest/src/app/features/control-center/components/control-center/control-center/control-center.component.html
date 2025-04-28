@@ -1,0 +1,61 @@
+<div class="control-center-container">
+  <h2>Centre de Contrôle</h2>
+  
+  @if (systems.length === 0) {
+    <p class="no-systems">Aucun système surveillé</p>
+  } @else {
+    <div class="systems-grid">
+      @for (system of systems; track system.id) {
+        <div class="system-card" [class]="getStatusClass(system.status)">
+          <div class="system-header">
+            <h3>{{ system.name }}</h3>
+            
+            @switch (system.status) {
+              @case ('operational') {
+                <span class="status-badge operational">Opérationnel</span>
+              }
+              @case ('degraded') {
+                <span class="status-badge degraded">Dégradé</span>
+              }
+              @case ('critical') {
+                <span class="status-badge critical">Critique</span>
+              }
+              @case ('offline') {
+                <span class="status-badge offline">Hors ligne</span>
+              }
+            }
+          </div>
+          
+          <div class="system-details">
+            <p>
+              <strong>Dernier contrôle:</strong>
+              {{ system.lastCheck | date:'short' }}
+            </p>
+            
+            <div class="components-list">
+              <h4>Composants</h4>
+              <ul>
+                @for (component of system.components; track component.name) {
+                  <li [class]="getComponentStatusClass(component.status)">
+                    {{ component.name }}
+                    @switch (component.status) {
+                      @case ('ok') {
+                        <span class="component-status ok">OK</span>
+                      }
+                      @case ('warning') {
+                        <span class="component-status warning">Attention</span>
+                      }
+                      @case ('error') {
+                        <span class="component-status error">Erreur</span>
+                      }
+                    }
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

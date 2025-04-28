@@ -1,0 +1,311 @@
+/* Futuristic space station UI elements */
+
+/* Glowing effects */
+.glow {
+  box-shadow: 0 0 10px var(--space-accent);
+}
+
+.glow-text {
+  text-shadow: 0 0 5px var(--space-accent), 0 0 10px var(--space-accent-transparent);
+}
+
+.glow-border {
+  border: 1px solid var(--space-accent);
+  box-shadow: 0 0 5px var(--space-accent), 0 0 10px var(--space-accent-transparent) inset;
+}
+
+/* HUD-style panels */
+.panel {
+  background-color: var(--space-panel-bg);
+  border: 1px solid var(--space-panel-border);
+  border-radius: 4px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, var(--space-accent-transparent), transparent);
+    border-radius: 5px;
+    z-index: -1;
+  }
+}
+
+.panel-dark {
+  background-color: rgba(12, 20, 39, 0.8);
+  border-color: var(--space-blue-light);
+}
+
+.panel-header {
+  border-bottom: 1px solid var(--space-panel-border);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  h2, h3, h4 {
+    margin: 0;
+    color: var(--space-accent);
+  }
+}
+
+/* Terminal style text */
+.terminal {
+  font-family: var(--font-mono);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--space-success);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow: auto;
+  
+  &::before {
+    content: '> ';
+    color: var(--space-accent);
+  }
+}
+
+/* Holographic controls */
+.holo-control {
+  position: relative;
+  border: 1px solid var(--space-accent);
+  background-color: rgba(26, 35, 126, 0.2);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  color: var(--space-white);
+  transition: all 0.2s ease;
+  
+  &:hover, &:focus {
+    background-color: rgba(26, 35, 126, 0.4);
+    box-shadow: 0 0 10px var(--space-accent);
+  }
+  
+  &:active {
+    background-color: rgba(26, 35, 126, 0.6);
+  }
+}
+
+/* Radar and scanner effects */
+@keyframes radar-scan {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.radar {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: rgba(10, 14, 23, 0.8);
+  border: 1px solid var(--space-accent);
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--space-accent), transparent);
+    transform-origin: left center;
+    animation: radar-scan 4s linear infinite;
+  }
+}
+
+/* Data display panels */
+.data-display {
+  font-family: var(--font-mono);
+  background-color: rgba(10, 14, 23, 0.9);
+  color: var(--space-accent);
+  padding: 1rem;
+  border: 1px solid var(--space-blue-light);
+  border-radius: 4px;
+  
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(30, 136, 229, 0.3);
+    padding: 0.5rem 0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .data-label {
+      color: var(--space-white);
+      font-weight: 500;
+    }
+    
+    .data-value {
+      font-weight: 700;
+    }
+    
+    &.critical .data-value {
+      color: var(--space-alert);
+      animation: pulse 2s infinite;
+    }
+    
+    &.warning .data-value {
+      color: var(--space-warning);
+    }
+    
+    &.optimal .data-value {
+      color: var(--space-success);
+    }
+  }
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  
+  &.status-online {
+    background-color: var(--space-success);
+    box-shadow: 0 0 5px var(--space-success);
+  }
+  
+  &.status-standby {
+    background-color: var(--space-warning);
+    box-shadow: 0 0 5px var(--space-warning);
+  }
+  
+  &.status-offline {
+    background-color: var(--space-alert);
+    box-shadow: 0 0 5px var(--space-alert);
+  }
+}
+
+/* Pulse animation for critical alerts */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Futuristic buttons */
+.btn-space {
+  background-color: rgba(26, 35, 126, 0.2);
+  color: var(--space-white);
+  border: 1px solid var(--space-accent);
+  border-radius: 4px;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 176, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+  }
+  
+  &:hover, &:focus {
+    background-color: rgba(26, 35, 126, 0.4);
+    box-shadow: 0 0 10px var(--space-accent);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    background-color: rgba(26, 35, 126, 0.6);
+  }
+  
+  &.btn-primary {
+    background-color: rgba(0, 176, 255, 0.2);
+    border-color: var(--space-accent);
+  }
+  
+  &.btn-warning {
+    background-color: rgba(255, 171, 0, 0.2);
+    border-color: var(--space-warning);
+  }
+  
+  &.btn-danger {
+    background-color: rgba(245, 0, 87, 0.2);
+    border-color: var(--space-alert);
+  }
+  
+  &.btn-success {
+    background-color: rgba(0, 200, 83, 0.2);
+    border-color: var(--space-success);
+  }
+}
+
+/* Loading indicators */
+.loader {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--space-accent);
+    animation: loader-spin 1s linear infinite;
+  }
+}
+
+@keyframes loader-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Grid system for control panels */
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  
+  .control-cell {
+    background-color: rgba(10, 14, 23, 0.8);
+    border: 1px solid var(--space-gray);
+    border-radius: 4px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: var(--space-accent);
+      box-shadow: 0 0 10px rgba(0, 176, 255, 0.3);
+    }
+  }
+}

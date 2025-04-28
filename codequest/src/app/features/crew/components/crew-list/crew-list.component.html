@@ -1,0 +1,15 @@
+<div class="crew-list">
+  <h2>Équipage de la Station</h2>
+
+  <div class="crew-grid">
+    @for (member of crewMembers; track member.id) {
+      <app-crew-member
+        [name]="member.name"
+        [role]="member.role"
+        [status]="member.status"
+        [avatar]="member.avatar"
+        (click)="toggleStatus(member)"
+      ></app-crew-member>
+    }
+  </div>
+</div>

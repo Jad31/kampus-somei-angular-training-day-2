@@ -1,0 +1,228 @@
+/* Import styles */
+@import 'styles/variables';
+@import 'styles/reset';
+@import 'styles/futuristic';
+
+:root {
+  // Space station theme colors
+  --space-black: #{$space-black};
+  --space-blue: #{$space-blue};
+  --space-blue-light: #{$space-blue-light};
+  --space-gray: #{$space-gray};
+  --space-white: #{$space-white};
+  --space-accent: #{$space-accent};
+  --space-accent-transparent: #{rgba(0, 176, 255, 0.3)};
+  --space-alert: #{$space-alert};
+  --space-success: #{$space-success};
+  --space-warning: #{$space-warning};
+  
+  // Panel elements
+  --space-panel-bg: #{rgba(10, 14, 23, 0.8)};
+  --space-panel-border: #{rgba(30, 136, 229, 0.5)};
+  
+  // Fonts
+  --font-base: #{$font-family-base};
+  --font-mono: #{$font-family-monospace};
+}
+
+/* Base styles */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--space-black);
+  color: var(--space-white);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(30, 136, 229, 0.05) 0%, transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(124, 77, 255, 0.05) 0%, transparent 30%),
+    linear-gradient(to bottom, var(--space-black), #{darken($space-blue, 15%)});
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--space-white);
+  text-shadow: 0 0 10px rgba(0, 176, 255, 0.5);
+}
+
+h2 {
+  font-size: 2rem;
+  color: var(--space-accent);
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+// Paragraphs
+p {
+  margin-bottom: 1rem;
+}
+
+// Links
+a {
+  color: var(--space-accent);
+  transition: all 0.2s ease;
+  
+  &:hover, &:focus {
+    color: lighten($space-accent, 15%);
+    text-shadow: 0 0 5px rgba(0, 176, 255, 0.5);
+  }
+}
+
+// Container
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// Main content area
+.main-content {
+  padding: 2rem 0;
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 14, 23, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--space-blue-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--space-accent);
+}
+
+// Utility classes
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-accent {
+  color: var(--space-accent);
+}
+
+.text-success {
+  color: var(--space-success);
+}
+
+.text-warning {
+  color: var(--space-warning);
+}
+
+.text-danger {
+  color: var(--space-alert);
+}
+
+.mb-1 { margin-bottom: map-get($spacers, 1); }
+.mb-2 { margin-bottom: map-get($spacers, 2); }
+.mb-3 { margin-bottom: map-get($spacers, 3); }
+.mb-4 { margin-bottom: map-get($spacers, 4); }
+.mb-5 { margin-bottom: map-get($spacers, 5); }
+
+.mt-1 { margin-top: map-get($spacers, 1); }
+.mt-2 { margin-top: map-get($spacers, 2); }
+.mt-3 { margin-top: map-get($spacers, 3); }
+.mt-4 { margin-top: map-get($spacers, 4); }
+.mt-5 { margin-top: map-get($spacers, 5); }
+
+.ml-1 { margin-left: map-get($spacers, 1); }
+.ml-2 { margin-left: map-get($spacers, 2); }
+.ml-3 { margin-left: map-get($spacers, 3); }
+.ml-4 { margin-left: map-get($spacers, 4); }
+.ml-5 { margin-left: map-get($spacers, 5); }
+
+.mr-1 { margin-right: map-get($spacers, 1); }
+.mr-2 { margin-right: map-get($spacers, 2); }
+.mr-3 { margin-right: map-get($spacers, 3); }
+.mr-4 { margin-right: map-get($spacers, 4); }
+.mr-5 { margin-right: map-get($spacers, 5); }
+
+.p-1 { padding: map-get($spacers, 1); }
+.p-2 { padding: map-get($spacers, 2); }
+.p-3 { padding: map-get($spacers, 3); }
+.p-4 { padding: map-get($spacers, 4); }
+.p-5 { padding: map-get($spacers, 5); }
+
+// Flex utilities
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+// Animation utilities
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

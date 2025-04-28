@@ -1,0 +1,10 @@
+{
+  "name": "kampus-somei-angular-training-day-2",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:codequest": "pnpm --filter codequest start",
+    "build:codequest": "pnpm --filter codequest build",
+    "test:codequest": "pnpm --filter codequest test"
+  }
+}

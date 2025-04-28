@@ -1,0 +1,16 @@
+<header class="orion-header">
+  <div class="logo-container">
+    <h1 data-testid="home-title" class="glow-text">Station Spatiale Orion</h1>
+    <p class="tagline">
+      Système d'exploitation avancé pour exploration spatiale
+    </p>
+  </div>
+
+  <nav data-testid="nav-menu" class="main-nav">
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Accueil</a>
+    <a routerLink="/crew" routerLinkActive="active" class="nav-link">Équipage</a>
+    <a routerLink="/missions" routerLinkActive="active" class="nav-link">Missions</a>
+    <a routerLink="/resources" routerLinkActive="active" class="nav-link">Ressources</a>
+    <a routerLink="/control-center" routerLinkActive="active" class="nav-link">Centre de Contrôle</a>
+  </nav>
+</header>

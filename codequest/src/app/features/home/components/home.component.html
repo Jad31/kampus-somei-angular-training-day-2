@@ -1,0 +1,72 @@
+<div class="panel panel-dark animate-slide-up" data-testid="welcome-info">
+  <div class="panel-header">
+    <h2>Bienvenue à bord</h2>
+    <div class="status">
+      <span class="status-indicator status-online"></span>
+      Système opérationnel
+    </div>
+  </div>
+
+  <p>
+    Bienvenue dans le projet d'apprentissage CodeQuest! Ce programme simule
+    le système d'exploitation "Orion OS" pour une station spatiale. Vous
+    allez construire ce système étape par étape à travers une série de
+    missions qui couvrent les principaux concepts d'Angular.
+  </p>
+
+  <div class="system-overview">
+    <h3>Modules du Système</h3>
+    <div class="control-grid">
+      <div class="control-cell">
+        <h4>Équipage</h4>
+        <p>Gestion des astronautes et personnel de la station</p>
+        <button class="btn-space" routerLink="/crew">Explorer</button>
+      </div>
+
+      <div class="control-cell">
+        <h4>Missions</h4>
+        <p>Planification et suivi des expériences scientifiques</p>
+        <button class="btn-space" routerLink="/missions">Explorer</button>
+      </div>
+
+      <div class="control-cell">
+        <h4>Ressources</h4>
+        <p>Supervision des ressources vitales et équipements</p>
+        <button class="btn-space" routerLink="/ressources">Explorer</button>
+      </div>
+
+      <div class="control-cell">
+        <h4>Centre de Contrôle</h4>
+        <p>Tableau de bord et statistiques en temps réel</p>
+        <button class="btn-space" routerLink="/controle">Explorer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mission-status">
+    <h3>Statut de la Mission</h3>
+    <div class="data-display">
+      <div class="data-row optimal">
+        <span class="data-label">État du système</span>
+        <span class="data-value">Nominal</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Astronautes à bord</span>
+        <span class="data-value">6</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Expériences en cours</span>
+        <span class="data-value">4</span>
+      </div>
+      <div class="data-row warning">
+        <span class="data-label">Niveau d'oxygène</span>
+        <span class="data-value">87%</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Puissance</span>
+        <span class="data-value">98%</span>
+      </div>
+    </div>
+  </div>
+
+</div>

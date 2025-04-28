@@ -1,0 +1,23 @@
+.crew-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+
+  .header {
+    padding: 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 2rem;
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    p {
+      margin: 0.5rem 0 0;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}

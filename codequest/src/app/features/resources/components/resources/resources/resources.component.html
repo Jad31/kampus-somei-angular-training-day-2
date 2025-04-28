@@ -1,0 +1,41 @@
+<div class="resources-container">
+  <h2>Gestion des Ressources</h2>
+  
+  @if (resources.length === 0) {
+    <p class="no-resources">Aucune ressource disponible</p>
+  } @else {
+    <div class="resources-grid">
+      @for (resource of resources; track resource.id) {
+        <div class="resource-card" [class]="getStatusClass(resource.status)">
+          <div class="resource-header">
+            <span class="resource-icon" [class]="getResourceIcon(resource.type)"></span>
+            <h3>{{ resource.name }}</h3>
+          </div>
+          
+          @switch (resource.status) {
+            @case ('sufficient') {
+              <span class="status-badge sufficient">Suffisant</span>
+            }
+            @case ('warning') {
+              <span class="status-badge warning">Attention</span>
+            }
+            @case ('critical') {
+              <span class="status-badge critical">Critique</span>
+            }
+          }
+          
+          <div class="resource-details">
+            <p>
+              <strong>Quantité:</strong>
+              <span class="quantity">{{ resource.quantity }}{{ resource.unit }}</span>
+            </p>
+            <p>
+              <strong>Dernière mise à jour:</strong>
+              {{ resource.lastUpdate | date:'short' }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

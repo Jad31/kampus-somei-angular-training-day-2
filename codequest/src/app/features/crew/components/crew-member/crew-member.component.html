@@ -1,0 +1,10 @@
+<div class="crew-member" [class.inactive]="status === 'inactive'">
+  <div class="avatar-container">
+    <img [src]="avatar" [alt]="name" class="avatar" />
+    <span class="status-indicator" [class.active]="status === 'active'"></span>
+  </div>
+  <div class="info">
+    <h3 class="name">{{ name }}</h3>
+    <p class="role">{{ role }}</p>
+  </div>
+</div>
