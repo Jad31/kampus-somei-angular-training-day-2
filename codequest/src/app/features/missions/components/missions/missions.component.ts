@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -45,7 +44,6 @@ export class MissionsComponent implements OnInit {
   error: string | null = null;
 
   private fb = inject(FormBuilder);
-  private route = inject(ActivatedRoute);
   private missionsService = inject(MissionsService);
 
   constructor() {

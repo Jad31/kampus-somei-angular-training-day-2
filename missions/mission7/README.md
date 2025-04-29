@@ -1,33 +1,29 @@
 # Mission 7️⃣ : Modernisation du Système de Gestion des Missions
 
 ## Contexte
-Le système de gestion des missions de la station spatiale Orion nécessite une modernisation pour améliorer sa réactivité et sa performance. Actuellement, le système utilise des approches impératives pour la gestion des données et des états, ce qui peut entraîner des problèmes de performance et de maintenabilité. Votre mission est de moderniser le système en utilisant la programmation réactive avec RxJS et les meilleures pratiques Angular 17.
+Le système de gestion des missions de la station spatiale Orion nécessite une modernisation pour améliorer sa réactivité. Actuellement, le système utilise des approches traditionnelles pour la gestion des données, ce qui peut entraîner des problèmes de performance. Votre mission est de moderniser le système en utilisant la programmation réactive avec RxJS.
 
 ## Objectif général
-Transformer le système de gestion des missions pour utiliser une architecture réactive basée sur RxJS, en optimisant la gestion des états et des flux de données.
+Transformer le système de gestion des missions pour utiliser une architecture réactive basée sur RxJS, en optimisant la gestion des données.
 
 ## État initial
 Le système actuel présente plusieurs points à améliorer :
-- Gestion impérative des états avec des variables de classe
+- Gestion traditionnelle des données avec des variables de classe
 - Souscriptions manuelles sans gestion explicite de la désinscription
 - Calculs des statistiques effectués de manière impérative
 - Gestion des erreurs basique
-- Rafraîchissement manuel des données
 
 ## Concepts RxJS fondamentaux
 
-![Fondamentaux RxJS](https://raw.githubusercontent.com/votre-repo/codequest/main/assets/rxjs-fundamentals.png)
-
-1. **Source** : API REST pour les missions
-2. **Pipe d'opérateurs** : Transformation et combinaison des données
-3. **Souscription** : Affichage des données dans le template
+1. **Observable** : Un flux de données qui peut être observé
+2. **Pipe** : Une série d'opérations pour transformer les données
+3. **Async Pipe** : Un pipe Angular qui gère automatiquement les souscriptions
 
 ## Concepts couverts
 - Fondamentaux RxJS et programmation réactive
-- Opérateurs RxJS essentiels (map, switchMap, combineLatest, etc.)
-- Gestion des souscriptions et prévention des fuites mémoire
+- Opérateurs RxJS de base (map, switchMap)
+- Gestion des souscriptions avec async pipe
 - Patterns modernes Angular pour RxJS
-- Architecture réactive pour la gestion d'état
 
 ## Détail des niveaux
 
@@ -36,23 +32,20 @@ Le système actuel présente plusieurs points à améliorer :
 **Objectif**: Moderniser l'affichage des missions avec le pattern Observable + async pipe.
 
 **Tâches**:
-1. Convertir le composant `MissionsComponent` pour utiliser le pattern Observable:
+1. Convertir le composant `MissionsComponent` pour utiliser les Observables:
    - Remplacer les variables de classe par des Observables
-   - Utiliser le pipe async dans les templates avec la nouvelle syntaxe `@if` d'Angular 17
-   - Implémenter un indicateur de chargement avec le pattern async
-2. Appliquer les transformations de base sur les données des missions:
-   - Utiliser `map` pour transformer les données brutes
-   - Filtrer les missions selon leur statut avec `filter`
-   - Trier les missions par priorité avec `map`
-3. Mettre en place un système de rafraîchissement périodique:
-   - Utiliser `interval` pour créer un flux périodique
-   - Combiner avec `switchMap` pour déclencher des requêtes API
+   - Utiliser le pipe async dans les templates
+   - Ajouter un indicateur de chargement
+2. Appliquer des transformations simples sur les données:
+   - Utiliser `map` pour transformer les données
+   - Filtrer les missions selon leur statut
+3. Mettre en place un rafraîchissement simple:
+   - Utiliser `switchMap` pour mettre à jour les données
 
 **Compétences acquises**:
 - Utilisation du pattern Observable + async pipe
 - Manipulation des opérateurs RxJS de base
 - Prévention des fuites mémoire grâce au async pipe
-- Création de flux périodiques
 
 ### Exemple de code pour le niveau junior
 
@@ -61,22 +54,17 @@ Le système actuel présente plusieurs points à améliorer :
 @Component({
   selector: 'app-missions',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule],
   template: `
     @if (missions$ | async; as missions) {
       <div class="missions-grid">
         @for (mission of missions; track mission.id) {
-          <div class="mission-card" [class]="getPriorityClass(mission.priority)">
+          <div class="mission-card">
             <h3>{{ mission.name }}</h3>
-            <div class="status" [class]="getStatusClass(mission.status)">
-              {{ mission.status }}
-            </div>
+            <div class="status">{{ mission.status }}</div>
             <div class="details">
               <div>Priorité: {{ mission.priority }}</div>
-              <div>Date de début: {{ mission.startDate | date }}</div>
-              @if (mission.endDate) {
-                <div>Date de fin: {{ mission.endDate | date }}</div>
-              }
+              <div>Date: {{ mission.startDate | date }}</div>
             </div>
             <div class="actions">
               <button (click)="startMission(mission.id)">Démarrer</button>
@@ -86,7 +74,7 @@ Le système actuel présente plusieurs points à améliorer :
         }
       </div>
     } @else if (loading$ | async) {
-      <div class="loading">Chargement des missions...</div>
+      <div class="loading">Chargement...</div>
     } @else if (error$ | async; as error) {
       <div class="error">{{ error }}</div>
     }
@@ -95,43 +83,27 @@ Le système actuel présente plusieurs points à améliorer :
 export class MissionsComponent {
   private missionsService = inject(MissionsService);
   
-  // Observable pour les missions avec tri par priorité
+  // Observable pour les missions
   missions$ = this.missionsService.getAllMissions().pipe(
     map(missions => missions.sort((a, b) => 
       this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority)
-    )),
-    shareReplay(1)
+    ))
   );
   
   // Observable pour l'état de chargement
   loading$ = this.missions$.pipe(
     map(() => false),
-    startWith(true),
-    catchError(() => of(false))
+    startWith(true)
   );
   
   // Observable pour les erreurs
   error$ = this.missions$.pipe(
     map(() => null),
-    catchError(err => of('Erreur lors du chargement des missions: ' + err.message))
-  );
-  
-  // Observable pour les statistiques
-  stats$ = this.missions$.pipe(
-    map(missions => ({
-      totalMissions: missions.length,
-      activeMissions: missions.filter(m => m.status === 'in-progress').length,
-      successRate: this.calculateSuccessRate(missions)
-    }))
+    catchError(err => of('Erreur: ' + err.message))
   );
   
   private getPriorityValue(priority: MissionPriority): number {
     return { high: 3, medium: 2, low: 1 }[priority];
-  }
-  
-  private calculateSuccessRate(missions: Mission[]): number {
-    const completed = missions.filter(m => m.status === 'completed').length;
-    return missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0;
   }
   
   startMission(missionId: string): void {
@@ -152,30 +124,26 @@ export class MissionsComponent {
 
 ### Éviter les memory leaks
 
-| Approche | Problème |
-|----------|----------|
-| ❌ **Souscription manuelle sans unsubscribe** | `this.missions$.subscribe(missions => this.missions = missions);` |
-| ❌ **Gestion manuelle avec takeUntil** | `takeUntil(this.destroy$)` + `ngOnDestroy` |
-| ✅ **Async pipe** | `<div>{{ missions$ \| async }}</div>` |
+| Approche | Problème | Solution |
+|----------|----------|----------|
+| ❌ Souscription manuelle | `this.missions$.subscribe(missions => this.missions = missions);` | Fuite mémoire |
+| ✅ Async pipe | `<div>{{ missions$ \| async }}</div>` | Pas de fuite |
 
-### Opérateurs essentiels dans Angular
+### Opérateurs essentiels
 
 | Opérateur | Usage | Exemple |
 |-----------|-------|---------|
-| `map` | Transformation simple | Calculer les statistiques |
-| `switchMap` | Changer de source observable | Mise à jour après action |
-| `combineLatest` | Fusionner plusieurs observables | Statistiques combinées |
-| `filter` | Filtrer les émissions | Missions actives |
-| `catchError` | Gérer les erreurs | Message d'erreur |
-| `shareReplay` | Partager les résultats | Éviter les appels multiples |
+| `map` | Transformer les données | `map(missions => missions.sort())` |
+| `switchMap` | Changer de source | `switchMap(() => this.missionsService.getAllMissions())` |
+| `catchError` | Gérer les erreurs | `catchError(err => of('Erreur'))` |
 
-### Pattern moderne Angular 17+
+### Pattern moderne Angular
 
 ```typescript
 // Pattern recommandé
 missions$ = this.missionsService.getAllMissions();
 
-// Template Angular 17+
+// Template
 @if (missions$ | async as missions) {
   <div class="missions-grid">
     @for (mission of missions; track mission.id) {
@@ -190,7 +158,6 @@ missions$ = this.missionsService.getAllMissions();
 Avantages:
 - ✅ Pas de `subscribe()` manuel
 - ✅ Pas de `ngOnDestroy()`
-- ✅ Pas de `Subscription`
 - ✅ Moins de code
 - ✅ Angular gère tout pour vous
 
@@ -199,9 +166,8 @@ Avantages:
 Pour cette mission, vous devrez:
 
 1. Moderniser l'affichage des missions en utilisant le pattern Observable + async pipe
-2. Implémenter les transformations de données avec les opérateurs RxJS appropriés
-3. Mettre en place un système de rafraîchissement périodique
-4. Gérer les états de chargement et d'erreur de manière réactive
-5. Appliquer les bonnes pratiques pour éviter les fuites mémoire
+2. Implémenter les transformations de données avec les opérateurs RxJS de base
+3. Gérer les états de chargement et d'erreur de manière réactive
+4. Appliquer les bonnes pratiques pour éviter les fuites mémoire
 
-Cette modernisation du système de gestion des missions permettra à la station Orion de suivre efficacement ses missions, tout en maintenant un code propre, sans fuites mémoire et facile à maintenir.
+Cette modernisation du système permettra à la station Orion de suivre efficacement ses missions, tout en maintenant un code propre et facile à maintenir.
