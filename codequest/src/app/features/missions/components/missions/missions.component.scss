@@ -484,17 +484,110 @@
 }
 
 .new-mission-form {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #1a1a1a;
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   h2 {
-    color: #fff;
-    font-size: 1.5rem;
+    color: #ffffff;
     margin-bottom: 1.5rem;
-    font-weight: 500;
+    font-size: 1.5rem;
+  }
+}
+
+.mission-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 0.75rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #4a90e2;
+      }
+
+      &.error {
+        border-color: #e74c3c;
+      }
+
+      &::placeholder {
+        color: #666;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-primary {
+      background-color: #4a90e2;
+      color: #ffffff;
+      border: none;
+
+      &:hover:not(:disabled) {
+        background-color: #357abd;
+      }
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #ffffff;
+      border: 1px solid #666;
+
+      &:hover {
+        background-color: #333;
+      }
+    }
   }
 }
 

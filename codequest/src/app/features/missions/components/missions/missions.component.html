@@ -9,17 +9,82 @@
   @if (showNewMissionForm) {
     <div class="new-mission-form">
       <h2>Nouvelle Mission</h2>
-      <!-- TODO: Implement the reactive form here -->
-      <div class="form-placeholder">
-        <p>À implémenter : Formulaire réactif pour ajouter une nouvelle mission</p>
-        <p>Le formulaire devra inclure :</p>
-        <ul>
-          <li>Nom de la mission</li>
-          <li>Priorité (low, medium, high)</li>
-          <li>Date de début</li>
-          <li>Description (optionnelle)</li>
-        </ul>
-      </div>
+      <form [formGroup]="missionForm" (ngSubmit)="onSubmit()" class="mission-form">
+        <div class="form-group">
+          <label for="name">Nom de la mission</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            [class.error]="getFormControl('name').invalid && getFormControl('name').touched"
+            placeholder="Entrez le nom de la mission"
+          />
+          @if (getFormControl('name').invalid && getFormControl('name').touched) {
+            <div class="error-message">
+              @if (getFormControl('name').hasError('required')) {
+                <span>Le nom de la mission est requis</span>
+              }
+              @if (getFormControl('name').hasError('minlength')) {
+                <span>Le nom doit contenir au moins 3 caractères</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Priorité</label>
+          <select
+            id="priority"
+            formControlName="priority"
+            [class.error]="getFormControl('priority').invalid && getFormControl('priority').touched"
+          >
+            <option value="low">Basse</option>
+            <option value="medium">Moyenne</option>
+            <option value="high">Haute</option>
+          </select>
+          @if (getFormControl('priority').invalid && getFormControl('priority').touched) {
+            <div class="error-message">
+              <span>La priorité est requise</span>
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="startDate">Date de début</label>
+          <input
+            type="date"
+            id="startDate"
+            formControlName="startDate"
+            [class.error]="getFormControl('startDate').invalid && getFormControl('startDate').touched"
+          />
+          @if (getFormControl('startDate').invalid && getFormControl('startDate').touched) {
+            <div class="error-message">
+              <span>La date de début est requise</span>
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description (optionnelle)</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            [class.error]="getFormControl('description').invalid && getFormControl('description').touched"
+            placeholder="Décrivez la mission..."
+            rows="4"
+          ></textarea>
+          @if (getFormControl('description').invalid && getFormControl('description').touched) {
+            <div class="error-message">
+              <span>La description ne doit pas dépasser 500 caractères</span>
+            </div>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="toggleNewMissionForm()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="missionForm.invalid">Créer la mission</button>
+        </div>
+      </form>
     </div>
   }
 
