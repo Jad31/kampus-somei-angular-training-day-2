@@ -27,14 +27,27 @@ interface MissionForm {
 })
 export class MissionsComponent implements OnInit {
   missions: Mission[] = [];
-
-  missionStats!: MissionStats;
+  missionStats: MissionStats = {
+    totalMissions: 0,
+    activeMissions: 0,
+    successRate: 0,
+    averageDuration: 0,
+    lastUpdate: new Date(),
+    priorityDistribution: {
+      high: 0,
+      medium: 0,
+      low: 0,
+    },
+  };
   showNewMissionForm = false;
   missionForm: FormGroup<MissionForm>;
+  isLoading = true;
+  error: string | null = null;
 
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private missionsService = inject(MissionsService);
+
   constructor() {
     this.missionForm = this.fb.group<MissionForm>({
       name: new FormControl('', {
@@ -53,11 +66,38 @@ export class MissionsComponent implements OnInit {
         validators: [Validators.maxLength(500)],
       }),
     });
-    this.getAllMissions();
   }
 
   ngOnInit() {
-    this.missionStats = this.route.snapshot.data['missionData'];
+    this.loadMissions();
+    this.loadMissionStats();
+  }
+
+  loadMissions() {
+    this.isLoading = true;
+    this.error = null;
+    this.missionsService.getAllMissions().subscribe({
+      next: (missions) => {
+        this.missions = missions;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load missions. Please try again later.';
+        this.isLoading = false;
+        console.error('Error loading missions:', err);
+      },
+    });
+  }
+
+  private loadMissionStats() {
+    this.missionsService.getMissionStats().subscribe({
+      next: (stats) => {
+        this.missionStats = stats;
+      },
+      error: (err) => {
+        console.error('Error loading mission stats:', err);
+      },
+    });
   }
 
   toggleNewMissionForm(): void {
@@ -97,15 +137,18 @@ export class MissionsComponent implements OnInit {
       totalMissions: this.missions.length,
       activeMissions: this.missions.filter((m) => m.status === 'in-progress')
         .length,
+      successRate: this.getSuccessRate(),
+      averageDuration: this.getAverageDuration(),
       lastUpdate: new Date(),
+      priorityDistribution: this.getPriorityDistribution(),
     };
   }
 
   getMissionDuration(mission: Mission): number {
     if (!mission.endDate) return 0;
-    const diffTime = Math.abs(
-      mission.endDate.getTime() - mission.startDate.getTime(),
-    );
+    const endDate = new Date(mission.endDate);
+    const startDate = new Date(mission.startDate);
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 
@@ -170,11 +213,5 @@ export class MissionsComponent implements OnInit {
 
   getFormControl(name: keyof MissionForm): FormControl {
     return this.missionForm.get(name) as FormControl;
-  }
-
-  getAllMissions() {
-    this.missionsService.getAllMissions().subscribe((missions) => {
-      this.missions = missions;
-    });
   }
 }

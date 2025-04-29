@@ -29,6 +29,6 @@ export class MissionResolver implements Resolve<MissionData> {
     };
 
     // Simuler un délai réseau de 1 seconde
-    return of(missionData).pipe(delay(1000));
+    return of(missionData);
   }
 }

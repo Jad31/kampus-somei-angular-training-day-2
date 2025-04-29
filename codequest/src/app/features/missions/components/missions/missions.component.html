@@ -1,293 +1,379 @@
 <div class="missions-container">
   <div class="missions-header">
-    <h1>Gestion des Missions</h1>
+    <h1>Mission Control</h1>
     <button class="btn-primary" (click)="toggleNewMissionForm()">
-      {{ showNewMissionForm ? 'Annuler' : 'Nouvelle Mission' }}
+      {{ showNewMissionForm ? "Cancel" : "New Mission" }}
     </button>
   </div>
 
-  @if (showNewMissionForm) {
-    <div class="new-mission-form">
-      <h2>Nouvelle Mission</h2>
-      <form [formGroup]="missionForm" (ngSubmit)="onSubmit()" class="mission-form">
-        <div class="form-group">
-          <label for="name">Nom de la mission</label>
-          <input
-            type="text"
-            id="name"
-            formControlName="name"
-            [class.error]="getFormControl('name').invalid && getFormControl('name').touched"
-            placeholder="Entrez le nom de la mission"
-          />
-          @if (getFormControl('name').invalid && getFormControl('name').touched) {
-            <div class="error-message">
-              @if (getFormControl('name').hasError('required')) {
-                <span>Le nom de la mission est requis</span>
-              }
-              @if (getFormControl('name').hasError('minlength')) {
-                <span>Le nom doit contenir au moins 3 caractères</span>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="priority">Priorité</label>
-          <select
-            id="priority"
-            formControlName="priority"
-            [class.error]="getFormControl('priority').invalid && getFormControl('priority').touched"
-          >
-            <option value="low">Basse</option>
-            <option value="medium">Moyenne</option>
-            <option value="high">Haute</option>
-          </select>
-          @if (getFormControl('priority').invalid && getFormControl('priority').touched) {
-            <div class="error-message">
-              <span>La priorité est requise</span>
-            </div>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="startDate">Date de début</label>
-          <input
-            type="date"
-            id="startDate"
-            formControlName="startDate"
-            [class.error]="getFormControl('startDate').invalid && getFormControl('startDate').touched"
-          />
-          @if (getFormControl('startDate').invalid && getFormControl('startDate').touched) {
-            <div class="error-message">
-              <span>La date de début est requise</span>
-            </div>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="description">Description (optionnelle)</label>
-          <textarea
-            id="description"
-            formControlName="description"
-            [class.error]="getFormControl('description').invalid && getFormControl('description').touched"
-            placeholder="Décrivez la mission..."
-            rows="4"
-          ></textarea>
-          @if (getFormControl('description').invalid && getFormControl('description').touched) {
-            <div class="error-message">
-              <span>La description ne doit pas dépasser 500 caractères</span>
-            </div>
-          }
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" (click)="toggleNewMissionForm()">Annuler</button>
-          <button type="submit" class="btn-primary" [disabled]="missionForm.invalid">Créer la mission</button>
-        </div>
-      </form>
-    </div>
-  }
-
-  <h2>Missions de la Station</h2>
-
-  @defer (on viewport) {
-    <div class="mission-stats">
-      <div class="stat-item">
-        <span class="stat-label">Total des missions:</span>
-        <span class="stat-value">{{ missionStats.totalMissions }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Missions actives:</span>
-        <span class="stat-value">{{ missionStats.activeMissions }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Dernière mise à jour:</span>
-        <span class="stat-value">{{ missionStats.lastUpdate | date:'medium' }}</span>
-      </div>
-    </div>
-  } @placeholder (minimum 500ms) {
-    <div class="mission-stats loading">
-      <div class="stat-item">
-        <span class="stat-label">Chargement des statistiques...</span>
-      </div>
-    </div>
-  } @loading (after 1000ms; minimum 1s) {
-    <div class="mission-stats loading">
-      <div class="stat-item">
-        <div class="loading-spinner"></div>
-        <span class="stat-label">Chargement en cours...</span>
-      </div>
-    </div>
-  }
-
-  @defer (on idle) {
-    <div class="mission-timeline">
-      <h3>Timeline des Missions</h3>
-      <div class="timeline-content">
-        <!-- Timeline content here -->
-      </div>
-    </div>
-  } @placeholder {
-    <div class="mission-timeline loading">
-      <h3>Timeline des Missions</h3>
-      <p>La timeline sera chargée lorsque le navigateur sera inactif</p>
-    </div>
-  } @loading {
-    <div class="mission-timeline loading">
-      <div class="loading-spinner"></div>
-      <p>Chargement de la timeline...</p>
-    </div>
-  }
-
-  <div class="missions-grid">
-    @for (mission of missions; track mission.id) {
-      <div class="mission-card">
-        <h3>{{ mission.name }}</h3>
-
-        <div class="description">
-          Planification et suivi des expériences scientifiques
-        </div>
-
-        @switch (mission.status) {
-          @case ('pending') {
-            <span class="status-badge pending">En attente</span>
-          }
-          @case ('in-progress') {
-            <span class="status-badge in-progress">En cours</span>
-          }
-          @case ('completed') {
-            <span class="status-badge completed">Terminée</span>
-          }
-          @case ('failed') {
-            <span class="status-badge failed">Échec</span>
-          }
-        }
-
-        @defer (on hover) {
-          <div class="mission-details">
-            <p>
-              <strong>Priorité:</strong>
-              <span [class]="'priority-indicator ' + getPriorityClass(mission.priority)">
-                {{ mission.priority }}
-              </span>
-            </p>
-            <p>
-              <strong>Date de début:</strong>
-              <span>{{ mission.startDate | date }}</span>
-            </p>
-            @if (mission.endDate) {
-              <p>
-                <strong>Date de fin:</strong>
-                <span>{{ mission.endDate | date }}</span>
-              </p>
-            }
-          </div>
-        } @placeholder {
-          <div class="mission-details loading">
-            <p>Survolez pour voir les détails</p>
-          </div>
-        } @loading {
-          <div class="mission-details loading">
-            <div class="loading-spinner"></div>
-            <p>Chargement des détails...</p>
-          </div>
-        }
-
-        @defer (on interaction) {
-          <div class="mission-actions">
-            <button class="action-button start" (click)="startMission(mission)">Démarrer</button>
-            <button class="action-button pause" (click)="pauseMission(mission)">Pause</button>
-            <button class="action-button complete" (click)="completeMission(mission)">Terminer</button>
-          </div>
-        } @placeholder {
-          <div class="mission-actions loading">
-            <p>Cliquez pour voir les actions disponibles</p>
-          </div>
-        } @loading {
-          <div class="mission-actions loading">
-            <div class="loading-spinner"></div>
-            <p>Chargement des actions...</p>
-          </div>
-        }
-
-        <a href="#" class="explorer-button">Explorer</a>
-      </div>
-    } @empty {
-      <p class="no-missions">Aucune mission en cours</p>
-    }
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading missions...</p>
   </div>
 
-  @defer (on timer(2000)) {
-    <div class="mission-analytics">
-      <h3>Analytics</h3>
-      <div class="analytics-content">
-        <div class="analytics-card">
-          <h4>Taux de réussite</h4>
-          <div class="analytics-value">{{ getSuccessRate() }}%</div>
-          <div class="analytics-label">Missions complétées avec succès</div>
-        </div>
-        <div class="analytics-card">
-          <h4>Temps moyen</h4>
-          <div class="analytics-value">{{ getAverageDuration() }}j</div>
-          <div class="analytics-label">Durée moyenne des missions</div>
-        </div>
-        <div class="analytics-card">
-          <h4>Priorités</h4>
-          <div class="analytics-value">{{ getPriorityDistribution().high }}</div>
-          <div class="analytics-label">Missions de haute priorité</div>
-        </div>
-        <div class="analytics-card">
-          <h4>Efficacité</h4>
-          <div class="analytics-value">{{ getEfficiencyRate() }}%</div>
-          <div class="analytics-label">Taux d'efficacité globale</div>
-        </div>
-      </div>
-    </div>
-  } @placeholder {
-    <div class="mission-analytics loading">
-      <h3>Analytics</h3>
-      <p>Les analytics seront chargés dans 2 secondes</p>
-    </div>
-  } @loading {
-    <div class="mission-analytics loading">
-      <div class="loading-spinner"></div>
-      <p>Chargement des analytics...</p>
-    </div>
-  }
+  <!-- Error State -->
+  <div *ngIf="error" class="error-state">
+    <p class="error-message">{{ error }}</p>
+    <button class="btn-primary" (click)="loadMissions()">Retry</button>
+  </div>
 
-  @defer (on viewport) {
-    <div class="mission-history">
-      <h3>Historique des Missions</h3>
-      <div class="history-content">
-        <div class="history-timeline">
-          @for (mission of missions; track mission.id) {
-            <div class="history-item">
-              <div class="history-date">{{ mission.startDate | date:'mediumDate' }}</div>
-              <div class="history-details">
-                <h4>{{ mission.name }}</h4>
-                <p class="history-status" [class]="'status-' + mission.status">
-                  {{ mission.status | titlecase }}
-                </p>
-                @if (mission.endDate) {
-                  <p class="history-duration">
-                    Durée: {{ getMissionDuration(mission) }} jours
-                  </p>
+  <!-- Content -->
+  <div *ngIf="!isLoading && !error">
+    @if (showNewMissionForm) {
+      <div class="new-mission-form">
+        <h2>Nouvelle Mission</h2>
+        <form
+          [formGroup]="missionForm"
+          (ngSubmit)="onSubmit()"
+          class="mission-form"
+        >
+          <div class="form-group">
+            <label for="name">Nom de la mission</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              [class.error]="
+                getFormControl('name').invalid && getFormControl('name').touched
+              "
+              placeholder="Entrez le nom de la mission"
+            />
+            @if (
+              getFormControl("name").invalid && getFormControl("name").touched
+            ) {
+              <div class="error-message">
+                @if (getFormControl("name").hasError("required")) {
+                  <span>Le nom de la mission est requis</span>
+                }
+                @if (getFormControl("name").hasError("minlength")) {
+                  <span>Le nom doit contenir au moins 3 caractères</span>
                 }
               </div>
-            </div>
-          }
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priorité</label>
+            <select
+              id="priority"
+              formControlName="priority"
+              [class.error]="
+                getFormControl('priority').invalid &&
+                getFormControl('priority').touched
+              "
+            >
+              <option value="low">Basse</option>
+              <option value="medium">Moyenne</option>
+              <option value="high">Haute</option>
+            </select>
+            @if (
+              getFormControl("priority").invalid &&
+              getFormControl("priority").touched
+            ) {
+              <div class="error-message">
+                <span>La priorité est requise</span>
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="startDate">Date de début</label>
+            <input
+              type="date"
+              id="startDate"
+              formControlName="startDate"
+              [class.error]="
+                getFormControl('startDate').invalid &&
+                getFormControl('startDate').touched
+              "
+            />
+            @if (
+              getFormControl("startDate").invalid &&
+              getFormControl("startDate").touched
+            ) {
+              <div class="error-message">
+                <span>La date de début est requise</span>
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description (optionnelle)</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              [class.error]="
+                getFormControl('description').invalid &&
+                getFormControl('description').touched
+              "
+              placeholder="Décrivez la mission..."
+              rows="4"
+            ></textarea>
+            @if (
+              getFormControl("description").invalid &&
+              getFormControl("description").touched
+            ) {
+              <div class="error-message">
+                <span>La description ne doit pas dépasser 500 caractères</span>
+              </div>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-secondary"
+              (click)="toggleNewMissionForm()"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="missionForm.invalid"
+            >
+              Créer la mission
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <h2>Missions de la Station</h2>
+
+    @defer (on viewport) {
+      <div class="mission-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total des missions:</span>
+          <span class="stat-value">{{ missionStats?.totalMissions || 0 }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Missions actives:</span>
+          <span class="stat-value">{{
+            missionStats?.activeMissions || 0
+          }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Dernière mise à jour:</span>
+          <span class="stat-value">{{
+            missionStats?.lastUpdate | date: "medium"
+          }}</span>
         </div>
       </div>
+    } @placeholder (minimum 500ms) {
+      <div class="mission-stats loading">
+        <div class="stat-item">
+          <span class="stat-label">Chargement des statistiques...</span>
+        </div>
+      </div>
+    } @loading (after 1000ms; minimum 1s) {
+      <div class="mission-stats loading">
+        <div class="stat-item">
+          <div class="loading-spinner"></div>
+          <span class="stat-label">Chargement en cours...</span>
+        </div>
+      </div>
+    }
+
+    @defer (on idle) {
+      <div class="mission-timeline">
+        <h3>Timeline des Missions</h3>
+        <div class="timeline-content">
+          <!-- Timeline content here -->
+        </div>
+      </div>
+    } @placeholder {
+      <div class="mission-timeline loading">
+        <h3>Timeline des Missions</h3>
+        <p>La timeline sera chargée lorsque le navigateur sera inactif</p>
+      </div>
+    } @loading {
+      <div class="mission-timeline loading">
+        <div class="loading-spinner"></div>
+        <p>Chargement de la timeline...</p>
+      </div>
+    }
+
+    <div class="missions-grid">
+      @for (mission of missions; track mission.id) {
+        <div class="mission-card">
+          <h3>{{ mission.name }}</h3>
+
+          <div class="description">
+            Planification et suivi des expériences scientifiques
+          </div>
+
+          @switch (mission.status) {
+            @case ("pending") {
+              <span class="status-badge pending">En attente</span>
+            }
+            @case ("in-progress") {
+              <span class="status-badge in-progress">En cours</span>
+            }
+            @case ("completed") {
+              <span class="status-badge completed">Terminée</span>
+            }
+            @case ("failed") {
+              <span class="status-badge failed">Échec</span>
+            }
+          }
+
+          @defer (on hover) {
+            <div class="mission-details">
+              <p>
+                <strong>Priorité:</strong>
+                <span
+                  [class]="
+                    'priority-indicator ' + getPriorityClass(mission.priority)
+                  "
+                >
+                  {{ mission.priority }}
+                </span>
+              </p>
+              <p>
+                <strong>Date de début:</strong>
+                <span>{{ mission.startDate | date }}</span>
+              </p>
+              @if (mission.endDate) {
+                <p>
+                  <strong>Date de fin:</strong>
+                  <span>{{ mission.endDate | date }}</span>
+                </p>
+              }
+            </div>
+          } @placeholder {
+            <div class="mission-details loading">
+              <p>Survolez pour voir les détails</p>
+            </div>
+          } @loading {
+            <div class="mission-details loading">
+              <div class="loading-spinner"></div>
+              <p>Chargement des détails...</p>
+            </div>
+          }
+
+          @defer (on interaction) {
+            <div class="mission-actions">
+              <button
+                class="action-button start"
+                (click)="startMission(mission)"
+              >
+                Démarrer
+              </button>
+              <button
+                class="action-button pause"
+                (click)="pauseMission(mission)"
+              >
+                Pause
+              </button>
+              <button
+                class="action-button complete"
+                (click)="completeMission(mission)"
+              >
+                Terminer
+              </button>
+            </div>
+          } @placeholder {
+            <div class="mission-actions loading">
+              <p>Cliquez pour voir les actions disponibles</p>
+            </div>
+          } @loading {
+            <div class="mission-actions loading">
+              <div class="loading-spinner"></div>
+              <p>Chargement des actions...</p>
+            </div>
+          }
+
+          <a href="#" class="explorer-button">Explorer</a>
+        </div>
+      } @empty {
+        <p class="no-missions">Aucune mission en cours</p>
+      }
     </div>
-  } @placeholder(minimum 500ms) {
-    <div class="mission-history loading">
-      <h3>Historique des Missions</h3>
-      <p>L'historique sera chargé lorsque vous ferez défiler jusqu'à cette section</p>
-    </div>
-  } @loading (after 100ms; minimum 1s) {
-    <div class="mission-history loading">
-      <div class="loading-spinner"></div>
-      <p>Chargement de l'historique...</p>
-    </div>
-  }
+
+    @defer (on timer(2000)) {
+      <div class="mission-analytics">
+        <h3>Analytics</h3>
+        <div class="analytics-content">
+          <div class="analytics-card">
+            <h4>Taux de réussite</h4>
+            <div class="analytics-value">{{ getSuccessRate() }}%</div>
+            <div class="analytics-label">Missions complétées avec succès</div>
+          </div>
+          <div class="analytics-card">
+            <h4>Temps moyen</h4>
+            <div class="analytics-value">{{ getAverageDuration() }}j</div>
+            <div class="analytics-label">Durée moyenne des missions</div>
+          </div>
+          <div class="analytics-card">
+            <h4>Priorités</h4>
+            <div class="analytics-value">
+              {{ getPriorityDistribution().high }}
+            </div>
+            <div class="analytics-label">Missions de haute priorité</div>
+          </div>
+          <div class="analytics-card">
+            <h4>Efficacité</h4>
+            <div class="analytics-value">{{ getEfficiencyRate() }}%</div>
+            <div class="analytics-label">Taux d'efficacité globale</div>
+          </div>
+        </div>
+      </div>
+    } @placeholder {
+      <div class="mission-analytics loading">
+        <h3>Analytics</h3>
+        <p>Les analytics seront chargés dans 2 secondes</p>
+      </div>
+    } @loading {
+      <div class="mission-analytics loading">
+        <div class="loading-spinner"></div>
+        <p>Chargement des analytics...</p>
+      </div>
+    }
+
+    @defer (on viewport) {
+      <div class="mission-history">
+        <h3>Historique des Missions</h3>
+        <div class="history-content">
+          <div class="history-timeline">
+            @for (mission of missions; track mission.id) {
+              <div class="history-item">
+                <div class="history-date">
+                  {{ mission.startDate | date: "mediumDate" }}
+                </div>
+                <div class="history-details">
+                  <h4>{{ mission.name }}</h4>
+                  <p
+                    class="history-status"
+                    [class]="'status-' + mission.status"
+                  >
+                    {{ mission.status | titlecase }}
+                  </p>
+                  @if (mission.endDate) {
+                    <p class="history-duration">
+                      Durée: {{ getMissionDuration(mission) }} jours
+                    </p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    } @placeholder (minimum 500ms) {
+      <div class="mission-history loading">
+        <h3>Historique des Missions</h3>
+        <p>
+          L'historique sera chargé lorsque vous ferez défiler jusqu'à cette
+          section
+        </p>
+      </div>
+    } @loading (after 100ms; minimum 1s) {
+      <div class="mission-history loading">
+        <div class="loading-spinner"></div>
+        <p>Chargement de l'historique...</p>
+      </div>
+    }
+  </div>
 </div>

@@ -15,5 +15,12 @@ export interface Mission {
 export interface MissionStats {
   totalMissions: number;
   activeMissions: number;
+  successRate: number;
+  averageDuration: number;
   lastUpdate: Date;
+  priorityDistribution: {
+    high: number;
+    medium: number;
+    low: number;
+  };
 }
