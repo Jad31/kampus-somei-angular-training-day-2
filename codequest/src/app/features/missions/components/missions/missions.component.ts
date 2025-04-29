@@ -8,26 +8,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
-type MissionStatus = 'pending' | 'in-progress' | 'completed' | 'failed';
-
-type MissionPriority = 'low' | 'medium' | 'high';
-
-interface Mission {
-  id: string;
-  name: string;
-  status: MissionStatus;
-  priority: MissionPriority;
-  startDate: Date;
-  endDate?: Date;
-  description?: string;
-}
-
-interface MissionStats {
-  totalMissions: number;
-  activeMissions: number;
-  lastUpdate: Date;
-}
+import { MissionsService } from './missions.service';
+import { Mission, MissionPriority, MissionStats } from './missions.types';
 
 interface MissionForm {
   name: FormControl<string>;
@@ -44,30 +26,7 @@ interface MissionForm {
   styleUrls: ['./missions.component.scss'],
 })
 export class MissionsComponent implements OnInit {
-  missions: Mission[] = [
-    {
-      id: '1',
-      name: 'Exploration de Mars',
-      status: 'in-progress',
-      priority: 'high',
-      startDate: new Date('2024-01-01'),
-    },
-    {
-      id: '2',
-      name: 'Maintenance des systèmes',
-      status: 'pending',
-      priority: 'medium',
-      startDate: new Date('2024-02-01'),
-    },
-    {
-      id: '3',
-      name: 'Analyse des données',
-      status: 'completed',
-      priority: 'low',
-      startDate: new Date('2024-01-15'),
-      endDate: new Date('2024-01-20'),
-    },
-  ];
+  missions: Mission[] = [];
 
   missionStats!: MissionStats;
   showNewMissionForm = false;
@@ -75,7 +34,7 @@ export class MissionsComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-
+  private missionsService = inject(MissionsService);
   constructor() {
     this.missionForm = this.fb.group<MissionForm>({
       name: new FormControl('', {
@@ -94,6 +53,7 @@ export class MissionsComponent implements OnInit {
         validators: [Validators.maxLength(500)],
       }),
     });
+    this.getAllMissions();
   }
 
   ngOnInit() {
@@ -210,5 +170,11 @@ export class MissionsComponent implements OnInit {
 
   getFormControl(name: keyof MissionForm): FormControl {
     return this.missionForm.get(name) as FormControl;
+  }
+
+  getAllMissions() {
+    this.missionsService.getAllMissions().subscribe((missions) => {
+      this.missions = missions;
+    });
   }
 }
